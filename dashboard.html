@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">    <title>Dashboard</title>
+    <style>
+.navbar-fixed-left {
+  width: 250px;
+  position: fixed;
+  border-radius: 0;
+  height: 100%;
+  padding-left: 0;
+}
+
+.navbar-fixed-left + .container {
+  padding-left: 200px;
+}
+
+.navbar-fixed-left .navbar-content  {
+  margin-top: -280px;
+}
+
+@media screen and (max-width: 600px){
+.navbar-fixed-left {
+  width: 200px;
+}
+.navbar-content{
+    padding: 0;
+}
+ .navbar-fixed-left .navbar-content  {
+    margin-top: -650px;
+    }   
+}
+
+.nav-h{
+cursor: pointer;
+}
+.nav-h:hover{
+    text-decoration: underline;
+    text-underline-position: under;
+}
+#username{
+    text-transform: capitalize;
+}
+</style>
+</head>
+
+<body>
+<script>
+ let h = new XMLHttpRequest();
+            h.open("GET", "php/dashboard.php", true);
+            h.onreadystatechange = function(){
+                if (this.readyState == 4 && this.status == 200) {
+                        let r=this.responseText
+                        if(r){
+                            let j
+                            try{
+                                j=JSON.parse(r)
+                            }catch(e){}finally{
+                                document.querySelectorAll('[id=username]').forEach(e=>e.innerHTML = j?j.name:'--')
+                                document.getElementById('email').innerHTML=j?j.email:'--'
+                            }
+                        }
+                        
+                        console.log(r)
+                    }
+            }
+            h.send(); 
+
+</script>
+
+
+
+
+    <div class="container-fluid"> 
+        <nav class="navbar fixed-top m-0 p-0 text-light avbar-dark bg-primary">
+            <div class="container-fluid">
+                <div class="row w-100 align-items-center">
+                    <div class="col-3 ">  
+                      <img src="logo.png" class="navbar-brand ml-3" width="50px" height="60px" alt="logo" style="border-radius: 100%;">
+                    </div>
+                    <div class="col-7">
+                      <h5 class="text-left">Welcome, <span id='username'></span></h5>
+                    </div>
+                    <div class="col-2  text-right">
+                       <span id='logout' style="cursor: pointer;" class="h6">logout</span>
+                    </div>
+                </div>
+            </div>   
+          </nav>
+
+    </div>
+
+
+          <div class="navbar navbar-inverse navbar-fixed-left" style="background-color: #ccd1d6;">
+                <div class="container navbar-content">
+                    <ul class="ul-nav">
+                        <li class="row h5 pb-2 nav-h changeHead active-item" data-target='profile'>Profile</li>
+                        <li class="row h5 pb-2 nav-h changeHead" data-target="changepswd">Change password</li>
+                        <li class="row h5 pb-2 nav-h changeHead" data-target='makeOrder'>Make order</li>
+                    </ul>
+                </div>
+          </div>
+
+
+          <div class="container" style="padding-top:100px">
+            <div id="profile" style="display: block;">
+                <table class="h5">
+                    <tbody>
+                        <tr>
+                            <th class="p-2">Name</th>
+                            <td class="p-2">:</td>
+                            <td class="p-2" id='username'></td>
+                        </tr>
+                        <tr>
+                            <th class="p-2">Email</th>
+                            <td class="p-2">:</td>
+                            <td class="p-2" id='email'></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id='changepswd' style="display: none;">
+                <i>Nothing...., in change password</i>
+            </div>
+  
+            <div id='makeOrder' style="display: none;">
+                <i>Nothing...., in make order</i>
+          </div>
+          </div>
+
+
+<script>
+        Array.prototype.slice.call(document.getElementsByClassName('changeHead')).forEach(el => {
+                el.onclick= e=>{
+                    let t= e.target
+                        let c = t.className.split(' ').forEach(e=>e==='active-item')
+                            if(!c){
+                                Array.prototype.slice.call(document.getElementsByClassName('ul-nav')[0].children).forEach(e=>{
+                                  e.classList.remove('active-item')
+                                    let c = document.getElementById(e.getAttribute('data-target'))
+                                    if(c)c.style.display = 'none'
+                            })   
+                        let c= document.getElementById(t.getAttribute('data-target'))
+                        if(c)c.style.display = 'block';
+                        t.classList.add('active-item')
+                    }
+                }
+        });  
+
+
+document.getElementById('logout').onclick = e =>{
+
+    let h = new XMLHttpRequest();
+            h.open("GET", "php/logout.php", true);
+            h.onreadystatechange = function(){
+                if (this.readyState == 4 && this.status == 200) {
+                        let r=this.responseText
+                        if(r)location.href= 'signin'
+                    }
+            }
+            h.send(); 
+}
+
+         
+</script>
+    
+</body>
+</html>
